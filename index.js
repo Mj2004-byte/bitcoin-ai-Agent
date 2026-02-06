@@ -30,7 +30,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(cors());
 app.use(express.json());
-const publicDir = path.join(__dirname, "public");
+const publicDir = path.join(__dirname, "..", "public");
 const indexHtmlPath = path.join(publicDir, "index.html");
 
 console.log("[AI_AGENT_BOOT]", {
@@ -287,7 +287,7 @@ async function runAgent(userMessage) {
 }
 
 // ------------------ EXPRESS ROUTES ------------------
-app.post("/chat", async (req, res) => {
+async function chatHandler(req, res) {
   const { message } = req.body || {};
 
   if (!message || typeof message !== "string") {
@@ -334,7 +334,10 @@ app.post("/chat", async (req, res) => {
         .json({ error: safeMessage });
     }
   }
-});
+}
+
+app.post("/chat", chatHandler);
+app.post("/api/chat", chatHandler);
 
 app.get("/health", (_req, res) => {
   return res.json({
