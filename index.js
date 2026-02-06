@@ -17,6 +17,10 @@ function getGroqClient() {
   groqClient = new Groq({ apiKey });
   return groqClient;
 }
+app.get("/health", (req, res) => {
+  res.json({ ok: true });
+});
+
 
 if (!process.env.GROQ_API_KEY) {
   console.warn(
@@ -378,3 +382,4 @@ async function startServer(initialPort) {
 
 const initialPort = Number(process.env.PORT) || 3000;
 startServer(initialPort);
+export default app;
