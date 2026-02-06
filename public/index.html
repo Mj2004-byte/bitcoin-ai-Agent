@@ -630,7 +630,8 @@
       showTyping();
 
       try {
-        const response = await fetch('/chat', {
+        // Use /api/chat so it works on Vercel and locally (Express also exposes /api/chat)
+        const response = await fetch('/api/chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
