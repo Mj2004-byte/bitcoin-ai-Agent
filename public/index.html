@@ -632,14 +632,23 @@
       try {
         // Use /api/chat so it works on Vercel and locally (Express also exposes /api/chat)
         const response = await fetch('/api/chat', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ message })
-        });
-        
-        const data = await response.json();
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ message })
+});
+
+let data;
+const contentType = response.headers.get("content-type");
+
+if (contentType && contentType.includes("application/json")) {
+  data = await response.json();
+} else {
+  const text = await response.text();
+  throw new Error("Non-JSON response:\n" + text);
+}
+
 
         hideTyping();
 
@@ -664,10 +673,11 @@
           console.error('No response field in payload:', data);
         }
       } catch (error) {
-        hideTyping();
-        addMessage('[ ERROR ] Connection failed. Please check server status.');
-        console.error('Error:', error);
-      }
+  hideTyping();
+  addMessage(`[ ERROR ] ${error.message}`);
+  console.error("Fetch error:", error);
+}
+
 
       sendButton.disabled = false;
       userInput.focus();
